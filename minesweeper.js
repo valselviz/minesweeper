@@ -2,7 +2,7 @@
 
 const boardSide = 8
 
-const minesCount = 10
+const minesCount = 3
 
 const board = []
 
@@ -39,9 +39,10 @@ function checkAdjacent(xAdjacent, yAdjacent) {
     }
 }
 
-function createCell(cell) {
+function createCell(x, y) {
     const tile = document.createElement("div")
-    tile.addEventListener("click", () => clickTile(tile, cell))
+    tile.setAttribute("id",x + ", " + y)
+    tile.addEventListener("click", () => clickTile(tile, x, y))
     document.getElementById("board").append(tile)
 }
 
@@ -49,9 +50,9 @@ function startGame() {
     document.getElementById("mines-count").innerText = minesCount
     document.getElementById("flag-button").addEventListener("click", setFlag)
 
-    for (let row of board) {
-        for (let cell of row) {
-            createCell(cell)
+    for (let x = 0; x < boardSide; x ++) {
+        for (let y = 0; y < boardSide; y ++) {
+            createCell(x, y)
         }
     }
 
@@ -72,7 +73,8 @@ function setFlag() {
     console.log(flagButton)
 }
 
-function clickTile(tile, cell) {
+function clickTile(tile, x, y) {
+    const cell = board[x][y]
     if (cell.content == "💣" || cell.value == 0) {
         tile.innerText = cell.content
     } else {
@@ -80,6 +82,42 @@ function clickTile(tile, cell) {
         tile.classList.add("x" + cell.value);
     }
     tile.classList.add("tile-clicked");
+    cell.clicked = true
+    if (cell.content == "" && cell.value == 0) {
+        clickAdjacent(x-1, y-1)
+        clickAdjacent(x-1, y)
+        clickAdjacent(x-1, y+1)
+        clickAdjacent(x, y-1)
+        clickAdjacent(x, y+1)
+        clickAdjacent(x+1, y-1)
+        clickAdjacent(x+1, y)
+        clickAdjacent(x+1, y+1)
+    }
+}
+
+function clickAdjacent(xAdjacent, yAdjacent) {
+    if (xAdjacent >= 0 && xAdjacent < boardSide && yAdjacent >= 0 && yAdjacent < boardSide && board[xAdjacent][yAdjacent].clicked == false) {
+        const adjacentTile = document.getElementById(xAdjacent + ", " + yAdjacent)
+        adjacentTile.classList.add("tile-clicked");
+        const cell = board[xAdjacent][yAdjacent]
+        cell.clicked = true
+        if (cell.value == 0) {
+            adjacentTile.innerText = cell.content
+        } else {
+            adjacentTile.innerText = cell.value
+            adjacentTile.classList.add("x" + cell.value);
+        }
+        if (cell.content == "" && cell.value == 0) {
+            clickAdjacent(xAdjacent-1, yAdjacent-1)
+            clickAdjacent(xAdjacent-1, yAdjacent)
+            clickAdjacent(xAdjacent-1, yAdjacent+1)
+            clickAdjacent(xAdjacent, yAdjacent-1)
+            clickAdjacent(xAdjacent, yAdjacent+1)
+            clickAdjacent(xAdjacent+1, yAdjacent-1)
+            clickAdjacent(xAdjacent+1, yAdjacent)
+            clickAdjacent(xAdjacent+1, yAdjacent+1)
+        }
+    }
 }
 
 startGame()
