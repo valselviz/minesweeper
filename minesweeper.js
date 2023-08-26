@@ -1,10 +1,12 @@
-// Instead of images we will use the emogies 🚩 and 💣
+// Instead of images we will use the emogies 🚩, 🦶 and 💣
 
 const boardSide = 8
 
 const minesCount = 20
 
 const board = []
+
+let flagButtonCliked = false
 
 for (let row = 0; row < boardSide; row ++){
     const rowArray = []
@@ -48,7 +50,7 @@ function createCell(x, y) {
 
 function startGame() {
     document.getElementById("mines-count").innerText = minesCount
-    document.getElementById("flag-button").addEventListener("click", setFlag)
+    document.getElementById("flag-button").addEventListener("click", switchMode)
 
     for (let x = 0; x < boardSide; x ++) {
         for (let y = 0; y < boardSide; y ++) {
@@ -67,13 +69,32 @@ function startGame() {
 
 }
 
-function setFlag() {
-    const flagButton = this
-    console.log('flag button has been clicked:')
-    console.log(flagButton)
+function switchMode() {
+    if (flagButtonCliked == false){
+        flagButtonCliked = true
+        document.getElementById("flag-button").innerText = "🚩"
+    } else {
+        flagButtonCliked = false
+        document.getElementById("flag-button").innerText = "🦶"
+    }
 }
 
 function clickTile(tile, x, y) {
+    if (flagButtonCliked == false) {
+        uncoverTile(tile, x, y)
+    } else {
+        setFlag(tile, x, y)
+    }
+}
+
+function setFlag(tile, x, y) {
+    const cell = board[x][y]
+    if (cell.clicked == false) {
+        tile.innerText = "🚩"
+    }
+}
+
+function uncoverTile(tile, x, y) {
     const cell = board[x][y]
     if (cell.content == "💣") {
         tile.innerText = cell.content
