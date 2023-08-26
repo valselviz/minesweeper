@@ -2,7 +2,7 @@
 
 const boardSide = 8
 
-const minesCount = 3
+const minesCount = 20
 
 const board = []
 
@@ -75,9 +75,12 @@ function setFlag() {
 
 function clickTile(tile, x, y) {
     const cell = board[x][y]
-    if (cell.content == "💣" || cell.value == 0) {
+    if (cell.content == "💣") {
         tile.innerText = cell.content
-    } else {
+        setTimeout(() => alert("PERDISTE!"), 100)
+    } else if (cell.value == 0) {
+        tile.innerText = cell.content
+    } else{
         tile.innerText = cell.value
         tile.classList.add("x" + cell.value);
     }
